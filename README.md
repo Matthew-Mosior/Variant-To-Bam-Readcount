@@ -1,1 +1,1 @@
-# Variant-To-bam-readcount
+# Variant-to-bam-readcount
