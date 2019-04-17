@@ -399,16 +399,14 @@ bamReadcountFormatVcf (x:xs) = [smallBamReadcountFormatVcf x] ++ (bamReadcountFo
         --Nested function definitions.--
         --smallBamReadcountFormatVcf
         smallBamReadcountFormatVcf :: (String,Int,(String,String)) -> (String,String,String,String,String)
-        smallBamReadcountFormatVcf (a,b,(c,d)) = (a,show b,show (detectRefVsAlt b c d),c,d)
+        smallBamReadcountFormatVcf (a,b,(c,d)) = (a,show (b + 1),show (detectRefVsAlt (b + 1) c d),c,d)
         --detectRefVsAlt
         detectRefVsAlt :: Int -> String -> String -> Int
         detectRefVsAlt a b c = --Insertion.
-                               if DL.length b == 1 &&
-                                  DL.length c > 1
-                                   then a + 1
+                               if DL.length b < DL.length c 
+                                   then a + (DL.length c - DL.length b)
                                    --Deletion.
-                                   else if DL.length b > 1 &&
-                                           DL.length c == 1
+                                   else if DL.length b > DL.length c
                                        then a
                                        --Default.
                                        else a
