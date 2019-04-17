@@ -332,10 +332,10 @@ bamReadcountFormatVep (x:xs) = [smallBamReadcountFormatVep x] ++ (bamReadcountFo
         --Nested function definitions.--
         --smallBamReadcountFormatVep
         smallBamReadcountFormatVep :: (String,Int,(String,String)) -> (String,String,String,String,String)
-        smallBamReadcountFormatVep (a,b,(c,d)) = (a,show b,show (detectRefVsAlt b c d),c,d) 
-        --detectRefVsAlt
-        detectRefVsAlt :: Int -> String -> String -> Int
-        detectRefVsAlt a b c = --Insertion.
+        smallBamReadcountFormatVep (a,b,(c,d)) = (a,show b,show (detectRefVsAltVep b c d),c,d) 
+        --detectRefVsAltVep
+        detectRefVsAltVep :: Int -> String -> String -> Int
+        detectRefVsAltVep a b c = --Insertion.
                                if b == "-"
                                    then a + 1
                                    --Deletion.
@@ -399,17 +399,21 @@ bamReadcountFormatVcf (x:xs) = [smallBamReadcountFormatVcf x] ++ (bamReadcountFo
         --Nested function definitions.--
         --smallBamReadcountFormatVcf
         smallBamReadcountFormatVcf :: (String,Int,(String,String)) -> (String,String,String,String,String)
-        smallBamReadcountFormatVcf (a,b,(c,d)) = (a,show (b + 1),show (detectRefVsAlt (b + 1) c d),c,d)
-        --detectRefVsAlt
-        detectRefVsAlt :: Int -> String -> String -> Int
-        detectRefVsAlt a b c = --Insertion.
+        smallBamReadcountFormatVcf (a,b,(c,d)) = (a,
+                                                  show (b + 1),
+                                                  show (detectRefVsAltVcf (b + 1) c d),
+                                                  (\(aa,bb,cc) -> bb) (detectRefVsAltVcf (b + 1) c d),
+                                                  (\(aa,bb,cc) -> cc) (detectRefVsAltVcf (b + 1) c d))
+        --detectRefVsAltVcf
+        detectRefVsAltVcf :: Int -> String -> String -> (Int,String,String)
+        detectRefVsAltVcf a b c = --Insertion.
                                if DL.length b < DL.length c 
-                                   then a + (DL.length c - DL.length b)
+                                   then (a + (DL.length c - DL.length b),"-",c)
                                    --Deletion.
                                    else if DL.length b > DL.length c
-                                       then a
+                                       then (a,b,"-")
                                        --Default.
-                                       else a
+                                       else (a,b,c)
 
 {----------------------------------}
 
