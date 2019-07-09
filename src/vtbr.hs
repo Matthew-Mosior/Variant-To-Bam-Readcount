@@ -401,19 +401,19 @@ bamReadcountFormatVcf (x:xs) = [smallBamReadcountFormatVcf x] ++ (bamReadcountFo
         smallBamReadcountFormatVcf :: (String,Int,(String,String)) -> (String,String,String,String,String)
         smallBamReadcountFormatVcf (a,b,(c,d)) = (a,
                                                   show (b + 1),
-                                                  show (detectRefVsAltVcf (b + 1) c d),
-                                                  c,
-                                                  d)
+                                                  show ((\(aa,bb,cc) -> aa) (detectRefVsAltVcf (b + 1) c d)),
+                                                  (\(aa,bb,cc) -> bb) (detectRefVsAltVcf (b + 1) c d),
+                                                  (\(aa,bb,cc) -> cc) (detectRefVsAltVcf (b + 1) c d))
         --detectRefVsAltVcf
-        detectRefVsAltVcf :: Int -> String -> String -> Int
+        detectRefVsAltVcf :: Int -> String -> String -> (Int,String,String)
         detectRefVsAltVcf a b c = --Insertion.
                                if DL.length b < DL.length c 
-                                   then a + (DL.length c - DL.length b)
+                                   then (a + (DL.length c - DL.length b),"-",c)
                                    --Deletion.
                                    else if DL.length b > DL.length c
-                                       then a
+                                       then (a,b,"-")
                                        --Default.
-                                       else a
+                                       else (a,b,c)
 
 {----------------------------------}
 
