@@ -401,7 +401,7 @@ bamReadcountFormatVcf (x:xs) = [smallBamReadcountFormatVcf x] ++ (bamReadcountFo
         smallBamReadcountFormatVcf :: (String,Int,(String,String)) -> (String,String,String,String,String)
         smallBamReadcountFormatVcf (a,b,(c,d)) = (a,
                                                   show (b + 1),
-                                                  show (detectRefVsAltVcf (b + 1) c d),
+                                                  show ((\(aa,bb,cc) -> aa) (detectRefVsAltVcf (b + 1) c d)),
                                                   (\(aa,bb,cc) -> bb) (detectRefVsAltVcf (b + 1) c d),
                                                   (\(aa,bb,cc) -> cc) (detectRefVsAltVcf (b + 1) c d))
         --detectRefVsAltVcf
