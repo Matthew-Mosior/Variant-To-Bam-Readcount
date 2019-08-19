@@ -332,17 +332,21 @@ bamReadcountFormatVep (x:xs) = [smallBamReadcountFormatVep x] ++ (bamReadcountFo
         --Nested function definitions.--
         --smallBamReadcountFormatVep
         smallBamReadcountFormatVep :: (String,Int,(String,String)) -> (String,String,String,String,String)
-        smallBamReadcountFormatVep (a,b,(c,d)) = (a,show b,show (detectRefVsAltVep b c d),c,d) 
+        smallBamReadcountFormatVep (a,b,(c,d)) = (a,
+                                                  show ((\(aa,bb) -> aa) (detectRefVsAltVep b c d)),
+                                                  show ((\(aa,bb) -> bb) (detectRefVsAltVep b c d)),
+                                                  c,
+                                                  d) 
         --detectRefVsAltVep
-        detectRefVsAltVep :: Int -> String -> String -> Int
+        detectRefVsAltVep :: Int -> String -> String -> (Int,Int)
         detectRefVsAltVep a b c = --Insertion.
                                if b == "-"
-                                   then a + 1
+                                   then (a - 1,a)
                                    --Deletion.
                                    else if c == "-" 
-                                       then a + (DL.length (b DL.\\ c)) - 1
+                                       then (a,a + (DL.length b) - 1)
                                        --Default.
-                                       else a
+                                       else (a,a)
         --------------------------------
 
 {----------------------------}
@@ -400,20 +404,20 @@ bamReadcountFormatVcf (x:xs) = [smallBamReadcountFormatVcf x] ++ (bamReadcountFo
         --smallBamReadcountFormatVcf
         smallBamReadcountFormatVcf :: (String,Int,(String,String)) -> (String,String,String,String,String)
         smallBamReadcountFormatVcf (a,b,(c,d)) = (a,
-                                                  show (b + 1),
-                                                  show ((\(aa,bb,cc) -> aa) (detectRefVsAltVcf (b + 1) c d)),
-                                                  (\(aa,bb,cc) -> bb) (detectRefVsAltVcf (b + 1) c d),
-                                                  (\(aa,bb,cc) -> cc) (detectRefVsAltVcf (b + 1) c d))
+                                                  show ((\(aa,bb,cc,dd) -> aa) (detectRefVsAltVcf b c d)),
+                                                  show ((\(aa,bb,cc,dd) -> bb) (detectRefVsAltVcf b c d)),
+                                                  (\(aa,bb,cc,dd) -> cc) (detectRefVsAltVcf b c d),
+                                                  (\(aa,bb,cc,dd) -> dd) (detectRefVsAltVcf b c d))
         --detectRefVsAltVcf
-        detectRefVsAltVcf :: Int -> String -> String -> (Int,String,String)
+        detectRefVsAltVcf :: Int -> String -> String -> (Int,Int,String,String)
         detectRefVsAltVcf a b c = --Insertion.
                                if DL.length b < DL.length c 
-                                   then (a + 1,"-",DL.tail c)
+                                   then (a,a + 1,"-",DL.tail c)
                                    --Deletion.
                                    else if DL.length b > DL.length c
-                                       then (a + (DL.length (b DL.\\ c)) - 1,DL.tail b,"-")
+                                       then (a + 1,a + (DL.length (b DL.\\ c)),DL.tail b,"-")
                                        --Default.
-                                       else (a,b,c)
+                                       else (a,a,b,c)
 
 {----------------------------------}
 
