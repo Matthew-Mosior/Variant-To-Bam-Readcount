@@ -340,13 +340,13 @@ bamReadcountFormatVep (x:xs) = [smallBamReadcountFormatVep x] ++ (bamReadcountFo
         --detectRefVsAltVep
         detectRefVsAltVep :: Int -> String -> String -> (Int,Int)
         detectRefVsAltVep a b c = --Insertion.
-                               if b == "-"
-                                   then (a - 1,a)
-                                   --Deletion.
-                                   else if c == "-" 
-                                       then (a,a + (DL.length b) - 1)
-                                       --Default.
-                                       else (a,a)
+                                  if b == "-"
+                                      then (a - 1,a)
+                                      --Deletion.
+                                      else if c == "-" 
+                                          then (a,a + (DL.length b) - 1)
+                                          --Default.
+                                          else (a,a)
         --------------------------------
 
 {----------------------------}
@@ -411,13 +411,13 @@ bamReadcountFormatVcf (x:xs) = [smallBamReadcountFormatVcf x] ++ (bamReadcountFo
         --detectRefVsAltVcf
         detectRefVsAltVcf :: Int -> String -> String -> (Int,Int,String,String)
         detectRefVsAltVcf a b c = --Insertion.
-                               if DL.length b < DL.length c 
-                                   then (a,a + 1,"-",DL.tail c)
-                                   --Deletion.
-                                   else if DL.length b > DL.length c
-                                       then (a + 1,a + (DL.length (b DL.\\ c)),DL.tail b,"-")
-                                       --Default.
-                                       else (a,a,b,c)
+                                  if DL.length b < DL.length c 
+                                      then (a,a + 1,"-",DL.tail c)
+                                      --Deletion.
+                                      else if DL.length b > DL.length c
+                                          then (a + 1,a + (DL.length (b DL.\\ c)),DL.tail b,"-")
+                                          --Default.
+                                          else (a,a,b,c)
 
 {----------------------------------}
 
